@@ -226,7 +226,8 @@ create policy "own insert" on reservations for insert with check (auth.uid() = u
 ```mermaid
 flowchart LR
   subgraph WALL["벽 안 — 우리가 짓는 것"]
-    UI["홀 · 화면 (Next.js)"] --> LOGIC["주방 · 서버 로직"]
+    UI["공간: 손님용 웹"] --> LOGIC["주방 · 서버 로직"]
+    ADMIN["공간: 관리자 페이지 (⑤에서 확정된 경우만)"] --> LOGIC
     LOGIC --> DB[("창고 · Supabase DB")]
   end
   LOGIC -->|로그인| AUTH["문: Supabase Auth ([8단계 답])"]
@@ -234,6 +235,13 @@ flowchart LR
   UI -->|배포| HOST["건물: Vercel"]
 ```
 (⑦에서 확정된 문만 그린다 — 예시 노드는 지우고 실제 답으로 교체)
+
+## 누가 들어오나 (역할 → 공간)
+| 역할 | 들어가는 공간 | 할 수 있는 일 |
+|---|---|---|
+| [예: 관광객] | 손님용 웹 | [보기·저장·결제] |
+| [예: 운영자(나)] | 관리자 페이지 | [정보 넣기·고치기·지우기] |
+| [다음 버전 역할은 "안 여는 문"처럼 아래 별도 표시] | | |
 
 ## 빌려오는 것 (문 목록)
 | 문(서비스) | 무엇을 대신해주나 | 어느 기능에 필요한가 | .env 키 | 과금 |
