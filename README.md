@@ -72,7 +72,7 @@ scripts/adopt.mjs    기존 프로젝트에 부품 주입
 .claude/
   CLAUDE.md          클로드에게 주는 조언 (비개발자 배려·plan.md 우선)
   settings.json      훅 연결
-  hooks/*.mjs        훅 5종 (node — jq·python 없이 어디서나 돔)
+  hooks/*.mjs        훅 6종 (node — jq·python 없이 어디서나 돔)
   skills/*           작업 스킬 8종 (기획·확인·디버그·배포·정리·마무리 등)
   agents/*           서브에이전트 2종 (code-reviewer · security-reviewer)
 plan.md              내 기획서 (blueprint 가 채움 · progress 훅이 읽음)
