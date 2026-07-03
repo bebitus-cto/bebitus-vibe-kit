@@ -75,6 +75,7 @@ scripts/adopt.mjs    기존 프로젝트에 부품 주입
   hooks/*.mjs        훅 6종 (node — jq·python 없이 어디서나 돔)
   skills/*           작업 스킬 8종 (기획·확인·디버그·배포·정리·마무리 등)
   agents/*           서브에이전트 2종 (code-reviewer · security-reviewer)
+profile.md           내 프로필 (신청폼 → AI 눈높이·기획 선답변)
 plan.md              내 기획서 (blueprint 가 채움 · progress 훅이 읽음)
 .env.example         열쇠 보관함 견본 (바이브코더 상용 플랫폼 키 전부)
 ```
