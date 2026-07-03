@@ -46,6 +46,10 @@ try {
   // 작업 서명: git 상태(변경 파일 목록+HEAD) + plan.md 내용.
   // git 이 없으면(수강생이 init 안 함) 소스 폴더의 최신 수정시각으로 코드 변경을 감지한다.
   const gitSig = sh("git status --porcelain", root) + sh("git rev-parse HEAD", root);
+  // 발동 신호는 "코드"가 바뀌었을 때만 — 기획(plan.md·docs·profile) 작업 중엔 울리지 않는다
+  // (기획 인터뷰 도중 마무리 의식이 끼어드는 소음 방지, 2026-07-03)
+  const head = sh("git rev-parse HEAD", root).trim();
+  const codeDirty = sh("git status --porcelain -- apps packages", root).trim() !== "";
   let fileSig = "";
   if (gitSig.trim() === "") {
     try {
@@ -82,7 +86,7 @@ try {
 
   const saveState = () => {
     try {
-      writeFileSync(statePath, JSON.stringify({ lastSig: sig, lastFiredAt: state.lastFiredAt ?? 0 }));
+      writeFileSync(statePath, JSON.stringify({ lastSig: sig, lastFiredAt: state.lastFiredAt ?? 0, lastHead: head }));
     } catch {}
   };
 
@@ -93,12 +97,15 @@ try {
   }
 
   const changed = state.lastSig !== sig;
-  const hasWork = gitSig.trim() !== "" || changed; // git 더러움 또는 서명 변화 = 이번 구간에 일이 있었다
+  // 코드 작업 판정: apps/·packages/ 가 더럽거나, 지난 발동 후 커밋이 이동(=코드가 커밋됨).
+  // git 이 없으면(수강생 미init) 코드 폴더 mtime 서명 변화가 신호를 대신한다.
+  const headMoved = head !== "" && typeof state.lastHead === "string" && state.lastHead !== head;
+  const hasWork = head === "" ? changed : codeDirty || headMoved;
   const cooled = Date.now() - (state.lastFiredAt ?? 0) > COOLDOWN_MS;
 
   if (changed && hasWork && cooled) {
     try {
-      writeFileSync(statePath, JSON.stringify({ lastSig: sig, lastFiredAt: Date.now() }));
+      writeFileSync(statePath, JSON.stringify({ lastSig: sig, lastFiredAt: Date.now(), lastHead: head }));
     } catch {}
     process.stdout.write(
       JSON.stringify({
