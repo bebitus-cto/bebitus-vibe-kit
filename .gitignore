@@ -22,3 +22,4 @@ progress.html
 # 테스트 산물
 test-results/
 playwright-report/
+.claude/.harness-state.json
